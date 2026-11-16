@@ -4,10 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Cartwheel · The workout log your AI can read</title>
-  <meta name="description" content="Log lifting, runs and climbs on your iPhone. Claude or ChatGPT reads all of it. Free to log, free to export.">
-  <meta name="theme-color" content="#0f1830">
+  <meta name="description" content="Cartwheel is the memory layer that powers your AI coach. Log lifting, runs and climbs on your iPhone; Claude or ChatGPT reads all of it. Free to log, free to export.">
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#0f1830" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f1efe8" media="(prefers-color-scheme: light)">
   <meta property="og:title" content="Cartwheel · The workout log your AI can read">
-  <meta property="og:description" content="Log lifting, runs and climbs on your iPhone. Claude or ChatGPT reads all of it.">
+  <meta property="og:description" content="The memory layer that powers your AI coach. Log on your iPhone; Claude or ChatGPT reads all of it.">
   <meta property="og:type" content="website">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -28,9 +30,12 @@
   </script>
 
   <style>
-    /* Brand colours and type, dark theme.
-       Show, don't tell: the app's screens carry the page, words stay under a paragraph,
-       and the whole page fits in four phone screens. Measure before adding anything. */
+    /* Colours, type, spacing and radius are the app's own (kata src/app/globals.css,
+       docs/design-system.md). Dark is the brand's identity and the default; a visitor
+       whose device is set to light gets the app's light theme. Keep the app's rules:
+       one filled persimmon element in view, hairline rules between rows (no boxes, rails,
+       gradients or uppercase labels), Geist Mono for every number that is data, and
+       Shippori Mincho only for the page title and the wordmark. */
     @font-face { font-family: 'Geist'; src: url('fonts/Geist-Variable.woff2') format('woff2'); font-weight: 400 600; font-display: swap; }
     @font-face { font-family: 'Geist Mono'; src: url('fonts/GeistMono-Variable.woff2') format('woff2'); font-weight: 400 500; font-display: swap; }
     @font-face { font-family: 'Shippori Mincho'; src: url('fonts/ShipporiMincho-SemiBold-latin.woff2') format('woff2'); font-weight: 600; font-display: swap; }
@@ -42,165 +47,339 @@
       --ink: #eef0f4;
       --ink-secondary: #a3abc0;
       --ink-tertiary: #737d9a;
-      --ink-faint: #4a5578;
-      --rule: rgba(238, 240, 244, 0.13);
-      --rule-strong: rgba(238, 240, 244, 0.42);
+      --separator: rgba(238, 240, 244, 0.09);
       --accent: #ef7d3c;
       --on-accent: #2a0f00;
-      --amber: #ecd35a;
-      --gutter: 16px;
-      --font-body: 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
-      --font-mono: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace;
-      --font-heading: 'Shippori Mincho', 'Times New Roman', serif;
+      --accent-tint: rgba(239, 125, 60, 0.13);
+      --elevation: none;
+      --phone-shadow: 0 32px 64px -32px rgb(0 0 0 / 0.7);
+
+      --sans: 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif;
+      --mono: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+      --serif: 'Shippori Mincho', 'Hiragino Mincho ProN', Georgia, serif;
+      --gutter: 20px;
       color-scheme: dark;
     }
-    @media (min-width: 720px) { :root { --gutter: 40px; } }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --background: #f1efe8;
+        --surface: #faf9f4;
+        --raised: #e4e1d6;
+        --ink: #17224a;
+        --ink-secondary: #515a84;
+        --ink-tertiary: #6e7699;
+        --separator: rgba(23, 34, 74, 0.09);
+        --accent: #a5450e;
+        --on-accent: #ffffff;
+        --accent-tint: rgba(165, 69, 14, 0.11);
+        --elevation: 0 1px 2px 0 rgb(10 14 12 / 0.08);
+        --phone-shadow: 0 32px 64px -32px rgb(23 34 74 / 0.45);
+        color-scheme: light;
+      }
+    }
 
     *, *::before, *::after { box-sizing: border-box; }
     html { -webkit-text-size-adjust: 100%; }
     body {
-      margin: 0; background: var(--background); color: var(--ink);
-      font-family: var(--font-body); font-size: 17px; line-height: 1.5;
-      -webkit-font-smoothing: antialiased; overflow-x: hidden;
+      margin: 0;
+      background: var(--background);
+      color: var(--ink);
+      font: 400 16px/1.5 var(--sans);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
-    a { color: inherit; }
-    p, h1, h2, figure { margin: 0; }
     img { display: block; max-width: 100%; height: auto; }
+    a { color: inherit; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 8px; }
+    h1, h2, h3, p, ol, ul, figure { margin: 0; }
+    ol, ul { padding: 0; list-style: none; }
+    .num { font-family: var(--mono); font-weight: 500; font-variant-numeric: tabular-nums; }
+
     .sheet {
-      width: 100%; max-width: 1080px; margin: 0 auto;
+      max-width: 1080px;
+      margin: 0 auto;
       padding-left: max(var(--gutter), env(safe-area-inset-left));
       padding-right: max(var(--gutter), env(safe-area-inset-right));
     }
-    a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-    h1, h2 { font-family: var(--font-heading); font-weight: 600; letter-spacing: 0; text-wrap: balance; }
+    @media (min-width: 720px) { :root { --gutter: 40px; } }
 
     /* Masthead */
-    .masthead { padding-top: max(8px, env(safe-area-inset-top)); }
-    .masthead .sheet > div { display: flex; align-items: center; justify-content: space-between; min-height: 60px; }
+    .masthead .sheet { display: flex; align-items: center; justify-content: space-between; padding-top: max(12px, env(safe-area-inset-top)); padding-bottom: 12px; }
     .brand { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; text-decoration: none; }
-    .brand img { width: 24px; }
-    .brand span { font-family: var(--font-heading); font-weight: 600; font-size: 21px; }
-    .plain {
-      display: inline-flex; align-items: center; min-height: 44px; color: var(--ink-secondary);
-      text-decoration: underline; text-decoration-color: var(--ink-faint);
-      text-underline-offset: 5px; text-decoration-thickness: 1px;
-    }
-    a.plain[href]:hover { color: var(--ink); text-decoration-color: var(--ink); }
-    .plain[aria-disabled="true"] { cursor: default; text-decoration-style: dotted; }
+    .brand img { width: 22px; height: 26px; }
+    .brand span { font: 600 22px/1 var(--serif); letter-spacing: -0.4px; }
+
+    /* Links and buttons */
     .signup {
-      display: inline-flex; align-items: center; justify-content: center; min-height: 52px; padding: 0 28px;
-      background: var(--accent); color: var(--on-accent); border-radius: 10px;
-      font: 600 17px/1 var(--font-body); text-decoration: none;
+      display: inline-flex; align-items: center; justify-content: center;
+      min-height: 52px; padding: 0 28px; border-radius: 8px;
+      background: var(--accent); color: var(--on-accent);
+      font: 600 16px/1 var(--sans); text-decoration: none;
+      transition: opacity 0.15s ease;
     }
-    .signup:hover { background: #f38d52; }
-    .acts { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 24px; }
-
-    /* 1. The promise, then the app itself */
-    .hero { padding-top: 28px; }
-    .hero h1 { font-size: clamp(44px, 11.8vw, 88px); line-height: 1.02; max-width: 9em; }
-    .hero .sub { margin-top: 16px; font-size: clamp(18px, 2.4vw, 21px); color: var(--ink-secondary); max-width: 24em; }
-    .hero .acts { margin-top: 24px; }
-    @media (min-width: 720px) { .hero { padding-top: 64px; } }
-
-    /* The screens: a row you swipe on a phone, a staggered row on a desk */
-    .screens {
-      margin-top: 40px; display: flex; gap: 14px;
-      overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none;
-      padding: 0 max(var(--gutter), env(safe-area-inset-left)) 8px;
-      scroll-padding: 0 var(--gutter);
+    .signup:hover { opacity: 0.9; }
+    .plain {
+      display: inline-flex; align-items: center; min-height: 44px; padding: 0 4px;
+      font: 500 15px/1.35 var(--sans); color: var(--ink); text-decoration: none;
     }
-    .screens::-webkit-scrollbar { display: none; }
-    .screens figure { flex: none; width: 66vw; max-width: 280px; scroll-snap-align: start; }
-    .screens img { border-radius: 28px; box-shadow: 0 0 0 1px var(--rule); }
-    .screens figcaption { margin-top: 10px; font-size: 14px; color: var(--ink-tertiary); }
-    @media (min-width: 900px) {
-      .screens { overflow: visible; justify-content: center; gap: 28px; margin-top: 72px; padding-bottom: 0; }
-      .screens figure { width: 280px; }
-      .screens figure:nth-child(2) { margin-top: 56px; }
-      .screens figure:nth-child(3) { margin-top: 18px; }
+    a.plain[href]:hover { text-decoration: underline; text-underline-offset: 3px; }
+    .plain[aria-disabled="true"] { color: var(--ink-secondary); cursor: default; }
+    .acts { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
+    .more { display: inline-flex; align-items: center; min-height: 44px; font: 500 15px/1.35 var(--sans); color: var(--accent); text-decoration: none; }
+    .more:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+    /* Phone screens: real captures from the iOS app, in the visitor's theme */
+    .phone { width: var(--phone-w, 280px); margin: 0 auto; }
+    .phone img {
+      width: 100%;
+      border-radius: calc(var(--phone-w, 280px) * 0.137);
+      box-shadow: 0 0 0 1px var(--separator), var(--phone-shadow);
+    }
+    .phone figcaption { margin-top: 16px; text-align: center; font: 400 13px/1.35 var(--sans); color: var(--ink-secondary); }
+
+    /* Sections */
+    section { padding: 64px 0; }
+    section + section { border-top: 1px solid var(--separator); }
+    @media (min-width: 880px) { section { padding: 96px 0; } }
+    h2 { font: 600 28px/1.15 var(--sans); letter-spacing: -0.6px; text-wrap: balance; }
+    @media (min-width: 720px) { h2 { font-size: 32px; letter-spacing: -0.8px; } }
+    .lede { margin-top: 12px; font-size: 17px; line-height: 1.5; color: var(--ink-secondary); max-width: 34em; text-wrap: pretty; }
+
+    /* Hero */
+    .hero { padding-top: 32px; }
+    .hero .sheet { display: grid; gap: 48px; align-items: center; }
+    .hero h1 {
+      font: 600 clamp(40px, 10.6vw, 72px)/1.05 var(--serif);
+      letter-spacing: -0.03em;
+      text-wrap: balance;
+    }
+    .hero .lede { margin-top: 20px; font-size: 18px; }
+    .hero .lede strong { color: var(--ink); font-weight: 500; }
+    .hero .acts { margin-top: 32px; }
+    .hero .note { margin-top: 16px; font: 400 13px/1.35 var(--sans); color: var(--ink-secondary); }
+    .hero .phone { --phone-w: min(300px, 78vw); }
+    @media (min-width: 880px) {
+      .hero { padding-top: 56px; }
+      .hero .sheet { grid-template-columns: 1fr 340px; gap: 64px; }
+      .hero .phone { --phone-w: 320px; }
     }
 
-    /* 2. Your AI reads it */
-    .read { padding-top: 72px; }
-    @media (min-width: 900px) { .read { padding-top: 120px; } .read .sheet { display: grid; grid-template-columns: 1fr 1.1fr; gap: 64px; align-items: center; } }
-    .read h2 { font-size: clamp(32px, 8vw, 52px); line-height: 1.08; }
-    .read .sub { margin-top: 12px; color: var(--ink-secondary); max-width: 24em; }
-    .read .sub em { font-style: normal; color: var(--ink); }
+    /* How it works: three numbered steps, hairline between them */
+    .steps { margin-top: 40px; display: grid; }
+    .steps li { padding: 24px 0; border-top: 1px solid var(--separator); display: grid; grid-template-columns: 40px 1fr; gap: 0 12px; }
+    .steps li:last-child { border-bottom: 1px solid var(--separator); }
+    .steps .num { font-size: 18px; color: var(--accent); line-height: 1.3; }
+    .steps h3 { font: 600 20px/1.25 var(--sans); letter-spacing: -0.3px; }
+    .steps p { grid-column: 2; margin-top: 8px; font-size: 15px; color: var(--ink-secondary); max-width: 30em; }
+    @media (min-width: 880px) {
+      .steps { grid-template-columns: repeat(3, 1fr); gap: 0 40px; }
+      .steps li { grid-template-columns: 1fr; padding: 24px 0 0; border-bottom: 0 !important; }
+      .steps .num { margin-bottom: 16px; }
+      .steps p { grid-column: 1; }
+    }
 
-    .chat { margin-top: 28px; background: var(--surface); border-radius: 20px; padding: 18px; display: grid; gap: 14px; max-width: 460px; }
-    @media (min-width: 900px) { .chat { margin-top: 0; } }
-    .chat .q { justify-self: end; max-width: 80%; background: var(--raised); border-radius: 16px 16px 4px 16px; padding: 10px 14px; }
-    .chat .used { font-size: 13px; color: var(--ink-secondary); }
-    .chat .used img { display: inline-block; width: 13px; margin-right: 6px; vertical-align: -2px; }
+    /* Memory: the History screen beside what a connected AI can do */
+    .memory .sheet { display: grid; gap: 48px; align-items: center; }
+    .memory .phone { --phone-w: min(280px, 72vw); order: 2; }
+    @media (min-width: 880px) {
+      .memory .sheet { grid-template-columns: 300px 1fr; gap: 80px; }
+      .memory .phone { --phone-w: 300px; order: 0; }
+    }
+    .can { margin-top: 32px; }
+    .can li { padding: 14px 0; border-top: 1px solid var(--separator); font: 500 15px/1.35 var(--sans); }
+    .can li:last-child { border-bottom: 1px solid var(--separator); }
+    .can li span { color: var(--ink-secondary); font-weight: 400; }
+
+    .chat {
+      margin-top: 32px; padding: 20px; border-radius: 12px;
+      background: var(--surface); box-shadow: var(--elevation);
+      max-width: 480px;
+    }
+    .chat .q { justify-self: end; margin-left: auto; width: fit-content; max-width: 85%; padding: 10px 14px; border-radius: 12px; background: var(--raised); font: 500 15px/1.35 var(--sans); }
+    .chat .used { margin-top: 16px; font: 400 13px/1.35 var(--sans); color: var(--ink-secondary); }
+    .chat .used img { display: inline-block; width: 12px; height: 14px; margin-right: 6px; vertical-align: -2px; }
     .chat .used b { color: var(--ink); font-weight: 500; }
-    .chat .rows { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 13px; color: var(--ink-secondary); border-left: 2px solid var(--accent); padding: 2px 0 2px 12px; display: grid; gap: 3px; }
-    .chat .rows span b { color: var(--ink); font-weight: 500; }
-    .chat .rows .pr { color: var(--amber); }
-    .chat .a { color: var(--ink); max-width: 30em; }
-    .chat .from { font-size: 12px; color: var(--ink-tertiary); }
+    .chat .rows { margin-top: 12px; display: grid; }
+    .chat .rows span { padding: 8px 0; border-top: 1px solid var(--separator); font: 400 13px/1.35 var(--sans); color: var(--ink-secondary); }
+    .chat .rows b { font-family: var(--mono); font-weight: 500; color: var(--ink); }
+    .chat .rows strong { font-weight: 500; color: var(--ink); }
+    .chat .a { margin-top: 12px; font-size: 15px; line-height: 1.5; }
+    .chat .from { margin-top: 12px; font: 400 13px/1.35 var(--sans); color: var(--ink-secondary); }
 
-    /* 3. Sign up */
-    .end { padding-top: 80px; }
-    .end h2 { font-size: clamp(32px, 8vw, 52px); line-height: 1.08; max-width: 12em; }
-    .end .acts { margin-top: 22px; }
-    .end .small { margin-top: 16px; font-size: 14px; color: var(--ink-tertiary); max-width: 34em; }
-    @media (min-width: 900px) { .end { padding-top: 136px; } }
+    /* Plans */
+    .plans { margin-top: 40px; display: grid; gap: 16px; }
+    @media (min-width: 720px) { .plans { grid-template-columns: 1fr 1fr; gap: 24px; } }
+    .plan { padding: 24px 0; border-top: 1px solid var(--separator); }
+    .plan.connect { padding: 24px; border: 0; border-radius: 12px; background: var(--surface); box-shadow: var(--elevation); }
+    @media (min-width: 720px) { .plan:not(.connect) { padding: 24px 0 0; } }
+    .plan h3 { font: 600 20px/1.25 var(--sans); letter-spacing: -0.3px; }
+    .plan .price { margin-top: 12px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+    .plan .price .num { font-size: 28px; letter-spacing: -0.5px; }
+    .plan .price span:not(.num) { font-size: 15px; color: var(--ink-secondary); }
+    .plan .alt { margin-top: 4px; font-size: 15px; color: var(--ink-secondary); }
+    .plan .alt .num { font-weight: 500; color: var(--ink); }
+    .plan ul { margin-top: 20px; }
+    .plan li { padding: 12px 0; border-top: 1px solid var(--separator); font-size: 15px; line-height: 1.4; }
+    .plans-note { margin-top: 24px; font-size: 15px; color: var(--ink-secondary); max-width: 40em; }
 
-    footer { margin-top: 56px; padding-bottom: max(16px, env(safe-area-inset-bottom)); }
-    footer .sheet > div { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 20px; border-top: 1px solid var(--rule); padding-top: 6px; font-size: 14px; color: var(--ink-tertiary); }
-    footer nav { display: flex; flex-wrap: wrap; gap: 0 18px; }
-    footer nav a { display: inline-flex; align-items: center; min-height: 44px; color: var(--ink-secondary); text-decoration: none; }
-    footer nav a:hover { color: var(--ink); }
+    /* Yours to keep */
+    .keep { margin-top: 40px; display: grid; }
+    @media (min-width: 720px) { .keep { grid-template-columns: 1fr 1fr; gap: 0 40px; } }
+    .keep li { padding: 20px 0; border-top: 1px solid var(--separator); }
+    .keep h3 { font: 600 17px/1.3 var(--sans); }
+    .keep p { margin-top: 6px; font-size: 15px; color: var(--ink-secondary); }
 
-    @media (prefers-reduced-motion: no-preference) {
-      .screens { scroll-behavior: smooth; }
-      .signup, .plain, footer nav a { transition: color .12s ease, background-color .12s ease; }
+    /* Last call */
+    .end { text-align: left; }
+    .end .acts { margin-top: 32px; }
+    .end .small { margin-top: 20px; font: 400 13px/1.45 var(--sans); color: var(--ink-secondary); max-width: 36em; }
+
+    footer { border-top: 1px solid var(--separator); }
+    footer .sheet > div {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 24px;
+      padding-top: 16px; padding-bottom: max(24px, env(safe-area-inset-bottom));
+      font: 400 13px/1.35 var(--sans); color: var(--ink-secondary);
+    }
+    footer nav { display: flex; flex-wrap: wrap; gap: 0 20px; }
+    footer nav a { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 44px; text-decoration: none; }
+    footer nav a:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
     }
   </style>
 </head>
 <body>
   <header class="masthead">
-    <div class="sheet"><div>
-      <a class="brand" href="./" aria-label="Cartwheel home"><img src="mark.svg" alt="" width="24" height="28"><span>Cartwheel</span></a>
+    <div class="sheet">
+      <a class="brand" href="./" aria-label="Cartwheel home"><img src="mark.svg" alt="" width="22" height="26"><span>Cartwheel</span></a>
       <a class="plain" href="https://app.cartwheel.fit/login" data-app-path="/login">Sign in</a>
-    </div></div>
+    </div>
   </header>
 
   <main>
     <section class="hero">
       <div class="sheet">
-        <h1>The workout log your AI can read.</h1>
-        <p class="sub">Log lifting, runs and climbs on your iPhone. Claude or ChatGPT reads every session.</p>
-        <div class="acts">
-          <a class="signup" href="https://app.cartwheel.fit/signup" data-app-path="/signup">Sign up free</a>
-          <a class="plain" data-app-store aria-disabled="true" role="link"><span data-app-store-label>App Store, coming soon</span></a>
+        <div>
+          <h1>The workout log your AI can read.</h1>
+          <p class="lede"><strong>Cartwheel is the memory layer that powers your AI coach.</strong> Log lifting, runs and climbs on your iPhone, set by set. Claude or ChatGPT reads all of it.</p>
+          <div class="acts">
+            <a class="signup" href="https://app.cartwheel.fit/signup" data-app-path="/signup">Sign up free</a>
+            <a class="plain" data-app-store aria-disabled="true" role="link"><span data-app-store-label>App Store, coming soon</span></a>
+          </div>
+          <p class="note">Free to log. Export everything, any time.</p>
         </div>
-      </div>
-      <div class="screens" aria-label="Cartwheel on iPhone">
-        <figure><img src="img/strength.png" width="306" height="595" alt="Logging a back squat: set 2 marked PR, set 3 at 120 kg ready to log."><figcaption>Lifting</figcaption></figure>
-        <figure><img src="img/climbing.png" width="306" height="595" alt="A bouldering session: four climbs, three sends, top grade V4."><figcaption>Climbing</figcaption></figure>
-        <figure><img src="img/home.png" width="306" height="595" alt="Home: routines with Up next, a recent climb and an easy run."><figcaption>Your week</figcaption></figure>
+        <figure class="phone">
+          <picture>
+            <source media="(prefers-color-scheme: light)" srcset="img/logger-light.webp">
+            <img src="img/logger-dark.webp" width="720" height="1565" alt="Cartwheel on iPhone, mid-workout: bench press with a warm-up and one working set at 180 lb for 5 logged, the next set ready, and a rest timer running.">
+          </picture>
+        </figure>
       </div>
     </section>
 
-    <section class="read" aria-labelledby="h-read">
+    <section class="how" aria-labelledby="h-how">
       <div class="sheet">
-        <div>
-          <h2 id="h-read">Then ask your AI.</h2>
-          <p class="sub">It reads your history, goals and injuries. It can add notes and routines, <em>never a workout</em>.</p>
-        </div>
-        <figure class="chat" aria-label="An example question in Claude or ChatGPT, answered from a Cartwheel log">
-          <p class="q">Why has my squat stalled?</p>
-          <p class="used"><img src="mark.svg" alt="" width="14" height="16">Read <b>12 sessions</b> and <b>1 constraint</b> from Cartwheel</p>
-          <div class="rows" aria-hidden="true">
-            <span>Oct 21 · squat <b>120 kg × 5</b></span>
-            <span>Oct 28 · squat <b>120 kg × 5</b></span>
-            <span>Nov 04 · squat <b>120 kg × 4</b></span>
-            <span>Since Oct 14 · <b>sore left knee</b></span>
-          </div>
-          <p class="a">Three weeks at 120 with your knee note on. Hold the weight and add a pause squat until the knee clears.</p>
-          <p class="from">Example</p>
+        <h2 id="h-how">How it works</h2>
+        <ol class="steps">
+          <li>
+            <span class="num" aria-hidden="true">1</span>
+            <div>
+              <h3>Log on your iPhone</h3>
+              <p>Lifting, runs and climbs, set by set. Your routine’s plan sits beside each set, and one tap logs it, signal or not.</p>
+            </div>
+          </li>
+          <li>
+            <span class="num" aria-hidden="true">2</span>
+            <div>
+              <h3>Connect your AI</h3>
+              <p>Add Cartwheel as a connector in Claude or ChatGPT, or any AI agent that speaks MCP. You approve it once, with your Cartwheel account.</p>
+            </div>
+          </li>
+          <li>
+            <span class="num" aria-hidden="true">3</span>
+            <div>
+              <h3>Your coach remembers</h3>
+              <p>Ask about your training and it answers from your log: every session, plus the goals and constraints you’ve written down.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="memory" aria-labelledby="h-memory">
+      <div class="sheet">
+        <figure class="phone">
+          <picture>
+            <source media="(prefers-color-scheme: light)" srcset="img/history-light.webp">
+            <img src="img/history-dark.webp" width="720" height="1491" alt="History: a 12-week streak, sessions per week as a bar chart, and a workout log of push days, two marked PR." loading="lazy">
+          </picture>
         </figure>
+        <div>
+          <h2 id="h-memory">Then ask your AI.</h2>
+          <p class="lede">One log, read by whichever AI you use. Switch assistants and your history comes with you.</p>
+          <ul class="can" aria-label="What a connected AI can do">
+            <li>Reads your workout history, goals, constraints, notes and routines</li>
+            <li>Adds and edits your goals, constraints and notes</li>
+            <li>Creates routines and suggests changes to yours</li>
+            <li>Never logs a workout for you <span>· logging stays yours</span></li>
+          </ul>
+          <figure class="chat" aria-label="An example question in Claude or ChatGPT, answered from a Cartwheel log">
+            <p class="q">Why has my squat stalled?</p>
+            <p class="used"><img src="mark.svg" alt="" width="12" height="14">Read <b>12 sessions</b> and <b>1 constraint</b> from Cartwheel</p>
+            <div class="rows" aria-hidden="true">
+              <span>Oct 21 · squat <b>120 kg × 5</b></span>
+              <span>Oct 28 · squat <b>120 kg × 5</b></span>
+              <span>Nov 04 · squat <b>120 kg × 4</b></span>
+              <span>Since Oct 14 · <strong>sore left knee</strong></span>
+            </div>
+            <p class="a">Three weeks at 120 with your knee note on. Hold the weight and add a pause squat until the knee clears.</p>
+            <p class="from">Example</p>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="pricing" aria-labelledby="h-plans">
+      <div class="sheet">
+        <h2 id="h-plans">Plans</h2>
+        <p class="lede">Logging is free. Connecting your AI is the Connect plan.</p>
+        <div class="plans">
+          <div class="plan">
+            <h3>Free</h3>
+            <p class="price"><span class="num">$0</span></p>
+            <ul>
+              <li>The full logger: lifting, runs and climbs</li>
+              <li>Your whole history, kept</li>
+              <li>Export everything, any time</li>
+            </ul>
+          </div>
+          <div class="plan connect">
+            <h3>Connect</h3>
+            <p class="price"><span class="num">$3.99</span><span>a month</span></p>
+            <p class="alt">or <span class="num">$34.99</span> a year</p>
+            <ul>
+              <li>Everything in Free</li>
+              <li>Connect Claude, ChatGPT or any AI agent over MCP</li>
+              <li>It reads your log, and can add goals, notes and routines</li>
+            </ul>
+          </div>
+        </div>
+        <p class="plans-note">Your own data stays yours on every plan: export is always free.</p>
+      </div>
+    </section>
+
+    <section class="yours" aria-labelledby="h-yours">
+      <div class="sheet">
+        <h2 id="h-yours">Your log is yours.</h2>
+        <p class="lede">We charge for quality and convenience, never for access to your own data.</p>
+        <ul class="keep">
+          <li><h3>Kept until you say otherwise</h3><p>What you log has no end date. Nothing is deleted on its own.</p></li>
+          <li><h3>Export any time</h3><p>Every session, on every plan, from Settings.</p></li>
+          <li><h3>No tracking</h3><p>No analytics, no advertising and no third-party tracking code, on the web or in the app.</p></li>
+          <li><h3>Leave whenever you like</h3><p>Delete your account from Settings. After 30 days it’s erased for good.</p></li>
+        </ul>
+        <a class="more" href="https://app.cartwheel.fit/privacy" data-app-path="/privacy">Read the privacy policy</a>
       </div>
     </section>
 
@@ -211,7 +390,7 @@
           <a class="signup" href="https://app.cartwheel.fit/signup" data-app-path="/signup">Sign up free</a>
           <a class="plain" data-app-store aria-disabled="true" role="link"><span data-app-store-label>App Store, coming soon</span></a>
         </div>
-        <p class="small">Export everything, any time. Connecting your AI is on the Connect plan. Accounts are opened by hand during early access.</p>
+        <p class="small">Accounts are opened by hand during early access.</p>
       </div>
     </section>
   </main>

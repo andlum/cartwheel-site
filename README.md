@@ -25,9 +25,11 @@ Both live in the `window.CARTWHEEL` block at the top of `index.html`:
 
 ## Keeping it honest
 
-- It stays short: under four phone screens, and less than a paragraph of words. The app's screens do the explaining.
+- It stays short: seven sections, each a heading and a few lines. The app's screens do most of the explaining.
+- It looks like the app: the same colour tokens in dark and light, the same type, radius and spacing (kata `src/app/globals.css`, `docs/design-system.md`). Dark is the default; a device set to light gets the app's light theme.
+- Prices match the app's (`src/lib/billing/prices.ts` in kata). Change both together.
 - Every feature it shows is one the app has today.
-- The screens in `img/` are drawn from the app's design. Swap in real iPhone screenshots when the App Store build is final.
+- The screens in `img/` are real captures from the iOS app, signed in to a throwaway local test account, in both themes (`*-dark.webp`, `*-light.webp`, 720px wide). Retake them when the screens change.
 
 ## Licences
 
