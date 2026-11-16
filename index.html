@@ -240,22 +240,6 @@
     .chat .a { margin-top: 12px; font-size: 15px; line-height: 1.5; }
     .chat .from { margin-top: 12px; font: 400 13px/1.35 var(--sans); color: var(--ink-secondary); }
 
-    /* Plans */
-    .plans { margin-top: 40px; display: grid; gap: 16px; }
-    @media (min-width: 720px) { .plans { grid-template-columns: 1fr 1fr; gap: 24px; } }
-    .plan { padding: 24px 0; border-top: 1px solid var(--separator); }
-    .plan.connect { padding: 24px; border: 0; border-radius: 12px; background: var(--surface); box-shadow: var(--elevation); }
-    @media (min-width: 720px) { .plan:not(.connect) { padding: 24px 0 0; } }
-    .plan h3 { font: 600 20px/1.25 var(--sans); letter-spacing: -0.3px; }
-    .plan .price { margin-top: 12px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
-    .plan .price .num { font-size: 28px; letter-spacing: -0.5px; }
-    .plan .price span:not(.num) { font-size: 15px; color: var(--ink-secondary); }
-    .plan .alt { margin-top: 4px; font-size: 15px; color: var(--ink-secondary); }
-    .plan .alt .num { font-weight: 500; color: var(--ink); }
-    .plan ul { margin-top: 20px; }
-    .plan li { padding: 12px 0; border-top: 1px solid var(--separator); font-size: 15px; line-height: 1.4; }
-    .plans-note { margin-top: 24px; font-size: 15px; color: var(--ink-secondary); max-width: 40em; }
-
     /* Yours to keep */
     .keep { margin-top: 40px; display: grid; }
     @media (min-width: 720px) { .keep { grid-template-columns: 1fr 1fr; gap: 0 40px; } }
@@ -381,35 +365,6 @@
             <p class="from">Example</p>
           </figure>
         </div>
-      </div>
-    </section>
-
-    <section class="pricing" aria-labelledby="h-plans">
-      <div class="sheet">
-        <h2 id="h-plans">Plans</h2>
-        <p class="lede">Logging is free. Connecting your AI is the Connect plan.</p>
-        <div class="plans">
-          <div class="plan">
-            <h3>Free</h3>
-            <p class="price"><span class="num">$0</span></p>
-            <ul>
-              <li>The full logger: lifting, runs and climbs</li>
-              <li>Your whole history, kept</li>
-              <li>Export everything, any time</li>
-            </ul>
-          </div>
-          <div class="plan connect">
-            <h3>Connect</h3>
-            <p class="price"><span class="num">$3.99</span><span>a month</span></p>
-            <p class="alt">or <span class="num">$34.99</span> a year</p>
-            <ul>
-              <li>Everything in Free</li>
-              <li>Connect Claude, ChatGPT or any AI agent over MCP</li>
-              <li>It reads your log, and can add goals, notes and routines</li>
-            </ul>
-          </div>
-        </div>
-        <p class="plans-note">Your own data stays yours on every plan: export is always free.</p>
       </div>
     </section>
 
