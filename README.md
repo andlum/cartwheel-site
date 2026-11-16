@@ -25,9 +25,8 @@ Both live in the `window.CARTWHEEL` block at the top of `index.html`:
 
 ## Keeping it honest
 
-- It stays short: seven sections, each a heading and a few lines. The app's screens do most of the explaining.
+- It stays short: six sections, each a heading and a few lines. The app's screens do most of the explaining.
 - It looks like the app: the same colour tokens in dark and light, the same type, radius and spacing (kata `src/app/globals.css`, `docs/design-system.md`). Dark is the default; a device set to light gets the app's light theme. The switch at the top right picks one theme for that browser and remembers it; without JavaScript it is hidden and the page follows the device.
-- Prices match the app's (`src/lib/billing/prices.ts` in kata). Change both together.
 - Every feature it shows is one the app has today.
 - The cartwheel above the last call to sign up is the app's own (kata AND-1403: `ios/Kata/Domain/CartwheelTumble.swift` and `CartwheelTumbleView.swift`), ported to a canvas with the same keyframes and numbers. If the app's changes, port it again rather than tuning it here. It plays once when it scrolls into view; with reduced motion it shows the landed pose, and without JavaScript it is not shown.
 - The screens in `img/` are real captures from the iOS app, signed in to a throwaway local test account, in both themes (`*-dark.webp`, `*-light.webp`, 720px wide). Retake them when the screens change.
